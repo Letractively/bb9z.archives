@@ -1,0 +1,12 @@
+[aliases]
+n0=/op /mode # +ooo $$1 $2 $3
+
+[script]
+n0=on *:LOAD:{
+n1=  echo mIRC Script Loaded!
+n2=  set %abc=456
+n3=}
+
+[path]
+root="D:\Projects\gc-bb9z\mIRC Shell"
+

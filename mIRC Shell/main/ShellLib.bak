@@ -1,0 +1,72 @@
+[aliases]
+n0=;--------------------------------------------------------------
+n1=;  Shell Lib
+n2=
+n3=shell::iniSetConfig {
+n4=  writeini $shell::GetPath(config.ini) $1 $2 $3-
+n5=}
+n6=shell::iniGetConfig {
+n7=  return $readini($shell::GetPath(config.ini),np,$1,$2)
+n8=}
+n9=
+n10=
+n11=shell::GetPath {
+n12=  if ( $1- ) {
+n13=    if ( $1- == config.ini ) return %shell::dirShellPath $+ config.ini
+n14=
+n15=  }
+n16=  else {
+n17=    return %shell::dirShellPath
+n18=  }
+n19=}
+n20=
+n21=shell::GetServerName {
+n22=  var %str = $server
+n23=  var %num = $numtok(%str,$asc(.))
+n24=  if ( %num == 3 ) {
+n25=    return $gettok(%str,2,$asc(.))
+n26=  }
+n27=  elseif ( %num == 4 ) {
+n28=    ; ip
+n29=    return %str
+n30=  }
+n31=  elseif ( %num == 2 ) {
+n32=    return $gettok(%str,1,$asc(.))
+n33=  }
+n34=  else {
+n35=    ; δ֪
+n36=    return $network
+n37=  }
+n38=}
+n39=
+n40=shell::OutWarning {
+n41=  Secho 5[Warning] $1-
+n42=}
+n43=shell::OutTip {
+n44=  Secho $1-
+n45=}
+n46=shell::OutInfo {
+n47=  Secho $1-
+n48=}
+n49=shell::OutError {
+n50=  Secho 4[Error] $1-
+n51=}
+n52=shell::OutDebugInfo {
+n53=  if ( %shell::DebugMode == ON ) {
+n54=    Secho $1-
+n55=  }
+n56=  else return
+n57=}
+n58=
+n59=;--------------------------------------------------------------
+n60=;  Lib
+n61=lib::str2dir {
+n62=  var %dir = $strip($1-)
+n63=  %dir = $remove(%dir,")
+n64=  %dir = $remove(%dir,')
+n65=  return %dir
+n66=}
+n67=
+n68=lib::strRemoveQuotes {
+n69=  return $remove($1-,")
+n70=}

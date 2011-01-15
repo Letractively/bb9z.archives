@@ -1,0 +1,86 @@
+[path]
+root=D:\Projects\gc-bb9z\mIRC Shell
+
+[aliases]
+n0=
+n1=shell::fnShellSetup {
+n2=  ; 获得正确的路径
+n3=  var %flPathAcp = 0
+n4=  while ( !%flPathAcp ) {
+n5=    shell::fnSetPathVar
+n6=    if ( %shell::dirShellPath ) {
+n7=      %flPathAcp = 1
+n8=    }
+n9=  }
+n10=
+n11=  ; 把必须的脚本加载进来
+n12=  var %ans = $?!="确定加载 %shell::dirShellPath 处的Shell吗？"
+n13=  if ( %ans ) {
+n14=    load -a $+(",%shell::dirShellPath,main\ShellLib.ini,")
+n15=    load -a $+(",%shell::dirShellPath,main\ShellMain.ini,")
+n16=    load -rs $+(",%shell::dirShellPath,main\ShellMain.ini,")
+n17=    signal shell_path_load ShellSetup.ini
+n18=  }
+n19=  else {
+n20=    shell::OutInfo 
+n21=    return
+n22=  }
+n23=}
+n24=
+n25=shell::fnSetPathVar {
+n26=  var %dir = $sdir(*,请选择Shell文件所在路径,ok)
+n27=  %dir = $lib::strRemoveQuotes(%dir)
+n28=  if ( %dir == $null ) {
+n29=    shell::OutError 空路径
+n30=    if ( %shell::dirShellPath ) {
+n31=      shell::OutWarning 路径未变更，当前： $+  %shell::dirShellPath
+n32=    }
+n33=    else {
+n34=      shell::OutWarning 没有正确设置路径，Shell不能工作
+n35=    }
+n36=    return
+n37=  }
+n38=  %shell::dirShellPath = %dir
+n39=  shell::OutInfo 已将路径设置到： $+ %shell::dirShellPath
+n40=}
+n41=
+n42=
+n43=
+n44=;--------------------------------------------------------------
+n45=;  Shell Lib
+n46=shell::OutWarning {
+n47=  Secho 5[Warning] $1-
+n48=}
+n49=shell::OutTip {
+n50=  Secho $1-
+n51=}
+n52=shell::OutInfo {
+n53=  Secho $1-
+n54=}
+n55=shell::OutError {
+n56=  Secho 4[Error] $1-
+n57=}
+n58=shell::OutDebugInfo {
+n59=  if ( %shell::DebugMode == ON ) {
+n60=    Secho $1-
+n61=  }
+n62=  else return
+n63=}
+n64=
+n65=;--------------------------------------------------------------
+n66=;  Lib
+n67=lib::strRemoveQuotes {
+n68=  return $remove($1-,")
+n69=}
+
+[script]
+n0=menu menubar {
+n1=  安装Shell:/shell::fnShellSetup
+n2=  $style(2) Shell控制台
+n3=}
+n4=on *:SIGNAL:shell_unload:{
+n5=  shell::ClearAllVar
+n6=  unload -a $+(",%shell::dirShellPath,main\ShellLib.ini,")
+n7=  unload -a $+(",%shell::dirShellPath,main\ShellMain.ini,")
+n8=  unload -rs $+(",%shell::dirShellPath,main\ShellMain.ini,")
+n9=}
